@@ -15,7 +15,7 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Context:** This should be run in a dedicated worktree (created by brainstorming skill).
 
-**Save plans to:** `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
+**Save plans to:** `.llmtmp/plans/YYYY-MM-DD-<feature-name>.md`
 - (User preferences for plan location override this default)
 
 ## Scope Check
@@ -131,11 +131,35 @@ After writing the complete plan, look at the spec with fresh eyes and check the 
 
 If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
 
+## Create bd Epic and Tasks
+
+After the plan is finalized, create a bd epic and child tasks to track execution state. The plan file remains the human-readable spec; bd tracks which tasks are done, blocked, or in progress.
+
+```bash
+# Create the epic from the plan title
+epic_id=$(bd create "Feature: <name>" -t epic -q --json | jq -r .id)
+
+# Create a child task for each plan task, with the full task text as description
+task1_id=$(bd create "Task 1: <component>" -t task --parent "$epic_id" -q --json | jq -r .id)
+bd update "$task1_id" -d "<full task text from plan>"
+
+task2_id=$(bd create "Task 2: <component>" -t task --parent "$epic_id" -q --json | jq -r .id)
+bd update "$task2_id" -d "<full task text from plan>"
+
+# Add blocks dependencies reflecting the plan's ordering
+bd dep add "$task2_id" "$task1_id"  # task2 blocked by task1
+# Continue for all tasks...
+```
+
+Each bd task description should include the full task text from the plan so that execution skills can retrieve it via `bd show <id> --long` without re-reading the plan file.
+
+After creating all tasks, verify the structure: `bd list --parent "$epic_id" --json`
+
 ## Execution Handoff
 
 After saving the plan, offer execution choice:
 
-**"Plan complete and saved to `docs/superpowers/plans/<filename>.md`. Two execution options:**
+**"Plan complete and saved to `.llmtmp/plans/<filename>.md`. bd epic created: `<epic_id>`. Two execution options:**
 
 **1. Subagent-Driven (recommended)** - I dispatch a fresh subagent per task, review between tasks, fast iteration
 

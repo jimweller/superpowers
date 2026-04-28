@@ -17,21 +17,24 @@ Load plan, review critically, execute all tasks, report when complete.
 
 ### Step 1: Load and Review Plan
 1. Read plan file
-2. Review critically - identify any questions or concerns about the plan
-3. If concerns: Raise them with your human partner before starting
-4. If no concerns: Create TodoWrite and proceed
+2. Verify bd epic and child tasks exist (created by writing-plans)
+3. Review critically - identify any questions or concerns about the plan
+4. If concerns: Raise them with your human partner before starting
+5. If no concerns: `bd ready --parent <epic-id> --json` to find first unblocked task and proceed
 
 ### Step 2: Execute Tasks
 
 For each task:
-1. Mark as in_progress
+1. `bd update <id> --claim` to mark as in_progress
 2. Follow each step exactly (plan has bite-sized steps)
 3. Run verifications as specified
-4. Mark as completed
+4. `bd update <id> --notes "COMPLETED: X. NEXT: Y"` to record progress mid-task
+5. `bd close <id> --reason "..."` when task is done
+6. `bd ready --parent <epic-id> --json` to find next unblocked task
 
 ### Step 3: Complete Development
 
-After all tasks complete and verified:
+After `bd ready --parent <epic-id>` returns no tasks and all tasks are closed:
 - Announce: "I'm using the finishing-a-development-branch skill to complete this work."
 - **REQUIRED SUB-SKILL:** Use superpowers:finishing-a-development-branch
 - Follow that skill to verify tests, present options, execute choice

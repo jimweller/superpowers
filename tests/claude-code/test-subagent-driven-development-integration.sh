@@ -205,13 +205,13 @@ else
 fi
 echo ""
 
-# Test 3: TodoWrite was used for tracking
+# Test 3: bd (beads) was used for tracking
 echo "Test 3: Task tracking..."
-todo_count=$(grep -c '"name":"TodoWrite"' "$SESSION_FILE" || echo "0")
-if [ "$todo_count" -ge 1 ]; then
-    echo "  [PASS] TodoWrite used $todo_count time(s) for task tracking"
+bd_count=$(grep -c '"bd "' "$SESSION_FILE" || echo "0")
+if [ "$bd_count" -ge 1 ]; then
+    echo "  [PASS] bd used $bd_count time(s) for task tracking"
 else
-    echo "  [FAIL] TodoWrite not used"
+    echo "  [FAIL] bd not used for task tracking"
     FAILED=$((FAILED + 1))
 fi
 echo ""
